@@ -55,13 +55,19 @@ void    ft_assign(char **ans, const char *base, long long num, int base_len)
     (*ans)++;
 }
 
-char    *ft_itoa_base(long long num, const char *base, long long base_len)
+char    *ft_itoa_base(long long num, const char *base, long long base_len, t_form *form)
 {
     int         len;
     long long   num2;
     char        *ans;
     char        *re;
 
+	if (form->precision == 0 && num == 0LL)
+	{
+		ans = (char*)malloc(1 * sizeof(char));
+		*ans = 0;
+		return (ans);
+	}
     num2 = num;
     len = (num < 0LL ? 2 : 1);
     num = (num < 0LL ? num * -1LL : num);
@@ -101,8 +107,8 @@ void    ft_int(va_list *arg, t_form *form, int *cnt)
     int     neg;
     int     len;
 
-    str = ft_itoa_base((long long)va_arg(*arg, int), "0123456789", 10LL);
-    len = ft_strlen(str);
+    str = ft_itoa_base((long long)va_arg(*arg, int), "0123456789", 10LL, form);
+	len = ft_strlen(str);
     if (str[0] == '-')
         form->precision = ft_max(0, form->precision - len + 1);
     else
@@ -127,7 +133,9 @@ void    ft_str(va_list *arg, t_form *form, int *cnt)
 {
     char    *str;
 
-    str = va_arg(*arg, char*);
+	str = va_arg(*arg, char*);
+	if (!str)
+		str = "(null)";
     if (form->precision == -1)
         form->precision = ft_strlen(str);
     form->precision = ft_min(form->precision, ft_strlen(str));
@@ -143,7 +151,7 @@ void    ft_x(va_list *arg, t_form *form, int *cnt)
     char    *str;
     int     len;
 
-    str = ft_itoa_base((long long)va_arg(*arg, unsigned), "0123456789abcdef", 16LL);
+    str = ft_itoa_base((long long)va_arg(*arg, unsigned), "0123456789abcdef", 16LL, form);
     len = ft_strlen(str);
     form->precision = ft_max(0, form->precision - len);
     form->width = ft_max(0, form->width - form->precision - len);
@@ -187,6 +195,8 @@ int     ft_printf(const char *str, ...)
 
     va_start(arg, str);
     pos = (char*)str;
+	if (!pos || !(*pos))
+		return (0);
     cnt = 0;
     while (*pos)
     {
@@ -201,11 +211,10 @@ int     ft_printf(const char *str, ...)
     va_end(arg);
     return (cnt);
 }
-
-#include <stdio.h>
-
-int main()
+/*
+int		main()
 {
-    ft_printf("Simple test\n");
-
+	printf("d0p %.0d %.0d %.0d %.0d %.0d %.0d %.0d %.0d\n", 0, 42, 1, 4554, 2147483647, (int)2147483648, (int)-2147483648, (int)-2147483649);
+	ft_printf("d0p %.0d %.0d %.0d %.0d %.0d %.0d %.0d %.0d\n", 0, 42, 1, 4554, 2147483647, (int)2147483648, (int)-2147483648, (int)-2147483649);
 }
+*/
