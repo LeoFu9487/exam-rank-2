@@ -1,0 +1,13 @@
+1 : va_list
+
+va_start(arg, str);
+ft_parse(&arg, )
+don't declare arg as a pointer
+
+2 : remember to deal with *s = NULL
+
+3 : put str[] = '\0' (NUL_TERMINATED) for itoa_base
+
+4 : remember when form->precision == -1, change it to as default
+
+time : 100 mins
