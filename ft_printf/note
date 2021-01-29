@@ -10,4 +10,6 @@ don't declare arg as a pointer
 
 4 : remember when form->precision == -1, change it to as default
 
-time : 100 mins
+5 : remember to declare re for ft_itoa_base
+
+time : 70 mins
