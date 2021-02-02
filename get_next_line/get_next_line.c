@@ -1,42 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/01/29 12:34:38 by yfu               #+#    #+#             */
+/*   Updated: 2021/02/02 10:35:51 by yfu              ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int	ft_connect(char **line, char c, int len)
+void ft_connect(int len, char **line, char c)
 {
-	char	*str;
-	int		ct;
-
-	if (!(str = malloc((len + 1) * sizeof(char))))
-		return (0);
-	ct = -1;
-	while (++ct < len - 1)
-		str[ct] = line[0][ct];
-	str[ct++] = c;
-	str[ct] = '\0';
+	char *str = malloc(len * sizeof(char));
+	for(int i = 0 ; i < len ; i++) str[i] = line[0][i];
 	free(*line);
-	*line = str;
-	return (1);
+	*line = malloc((len + 1) * sizeof(char));
+	for(int i = 0;  i < len - 1 ; i++) line[0][i] = str[i];
+	line[0][len - 1] = c;
+	line[0][len] = 0;
+	free(str);
 }
 
-int	get_next_line(char **line)
+int get_next_line(char **line)
 {
-	int		res[2];
-	char	buff[1];
-
-	if (!line)
-		return (-1);
+	char buff[1];
 	*line = malloc(1 * sizeof(char));
 	**line = 0;
-	res[0] = 1;
-	res[1] = 0;
-	while (res[0])
+	int len = 0;
+	while (1)
 	{
-		res[0] = read(0, buff, 1);
-		if (res[0] != 1)
-			return (res[0]);
-		if (buff[0] == '\n')
-			return (1);
-		if (!(ft_connect(line, buff[0], ++res[1])))
-			return (-1);
+		int res = read(0, buff, 1);
+		if (res != 1 || buff[0] == '\n')
+			return (res);
+		ft_connect(++len, line, buff[0]);
 	}
-	return (1);
+	return (0);
 }
